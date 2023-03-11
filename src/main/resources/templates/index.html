@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script type="text/javascript" th:src="@{/script/user.js}"></script>
+    <link th:rel="stylesheet" type="text/css" th:href="@{/css/style.css}">
+</head>
+<body>
+<h1>Users</h1>
+<div class="userForm">
+    <input type="text" class="user-first-name" placeholder="Name">
+    <input type="text" class="user-last-name" placeholder="Surname">
+    <button>Create</button>
+</div>
+<div class="tabs">
+    <input type="radio" name="tab-btn" id="tab-btn-1" value="" checked>
+    <label for="tab-btn-1">Active</label>
+    <input type="radio" name="tab-btn" id="tab-btn-2" value="">
+    <label for="tab-btn-2">Deleted</label>
+    <div id="content-1">
+        <div class="userTable">
+            <div class="filters">
+                <input type="text" class="user-first-name">
+                <input type="text" class="user-last-name">
+            </div>
+            <table>
+                <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Surname</th>
+                    <th>Date of Created</th>
+                    <th>Contact</th>
+                    <th>Action</th>
+                    <th>Action</th>
+                </tr>
+                </thead>
+                <tbody class="table-body-1">
+
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div id="content-2">
+        <div class="userDeletedTable">
+            <div class="filters">
+                <input type="text" class="user-first-name">
+                <input type="text" class="user-last-name">
+            </div>
+            <table>
+                <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Surname</th>
+                    <th>Date of Deleted</th>
+                    <th>Action</th>
+                </tr>
+                </thead>
+                <tbody class="table-body-2">
+
+                </tbody>
+            </table>
+            <div><h1 class="attention">Attention!! We keep the data for 10 days, then we delete it and you will not be able to restore it</h1></div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

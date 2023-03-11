@@ -1,0 +1,132 @@
+th {
+    text-align: left;
+    color: #fff;
+    background-color: #706d97;
+}
+td {
+    min-width: 250px;
+    color: #696969;
+    border-bottom: 1px solid #eee;
+}
+th, td {
+    padding: 10px;
+    height: 20px;
+}
+td:first-child {
+    width: 150px;
+    min-width: 0;
+}
+th:last-child {
+    text-align: right;
+}
+td:last-child {
+    width: 80px;
+    min-width: 0;
+    text-align: right;
+}
+tr:nth-child(odd) {
+    background-color: #eee;
+}
+/* аналог align="left" */
+table {
+    display: table;
+    margin-right: auto;
+    text-align: center;
+}
+body{
+    text-align: center;
+}
+
+/* аналог align="center" */
+table {
+    display: table;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+/* аналог align="right" */
+table {
+    display: table;
+    margin-left: auto;
+}
+
+.tabs {
+    font-size: 0;
+}
+
+.tabs>input[type="radio"] {
+    display: none;
+}
+
+.tabs>div {
+    /* скрыть контент по умолчанию */
+    display: none;
+    border: 1px solid #e0e0e0;
+    padding: 10px 15px;
+    font-size: 16px;
+}
+
+/* отобразить контент, связанный с вабранной радиокнопкой (input type="radio") */
+#tab-btn-1:checked~#content-1,
+#tab-btn-2:checked~#content-2,
+#tab-btn-3:checked~#content-3 {
+    display: block;
+}
+
+.tabs>label {
+    display: inline-block;
+    text-align: center;
+    vertical-align: middle;
+    user-select: none;
+    background-color: #f5f5f5;
+    border: 1px solid #e0e0e0;
+    padding: 2px 8px;
+    font-size: 16px;
+    line-height: 1.5;
+    transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out;
+    cursor: pointer;
+    position: relative;
+    top: 1px;
+}
+
+.tabs>label:not(:first-of-type) {
+    border-left: none;
+}
+
+.tabs>input[type="radio"]:checked+label {
+    background-color: #fff;
+    border-bottom: 1px solid #fff;
+}
+.pagination {
+    display: inline-block;
+
+}
+.pagination-container {
+    text-align: center;
+}
+
+.pagination a {
+    color: black;
+    float: left;
+    padding: 8px 16px;
+    text-decoration: none;
+    transition: background-color .3s;
+
+
+}
+
+.pagination a.active {
+    background-color: #4CAF50;
+    color: white;
+}
+
+.pagination a:hover:not(.active) {background-color: #ddd;}
+
+.pagination .prev, .pagination .next {
+    margin: 0 4px;
+}
+.attention{
+    text-align: center;
+    color: red;
+}
+

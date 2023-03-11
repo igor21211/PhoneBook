@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns:pro="http://www.liquibase.org/xml/ns/pro"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.4.xsd
+      http://www.liquibase.org/xml/ns/pro http://www.liquibase.org/xml/ns/pro/liquibase-pro-4.5.xsd">
+        <changeSet id="0.1" author="Igor">
+            <createTable tableName="users">
+                <column name="id" autoIncrement="true" type="bigint">
+                    <constraints primaryKey="true" nullable="false"/>
+                </column>
+                <column name="first_name" type="varchar">
+                    <constraints nullable="false"/>
+                </column>
+                <column name="last_name" type="varchar">
+                    <constraints nullable="false"/>
+                </column>
+            </createTable>
+            <createTable tableName="contact">
+                <column name="id" autoIncrement="true" type="bigint">
+                    <constraints primaryKey="true" nullable="false"/>
+                </column>
+                <column name="first_name" type="varchar">
+                    <constraints nullable="false"/>
+                </column>
+                <column name="last_name" type="varchar">
+                    <constraints nullable="false"/>
+                </column>
+                <column name="user_id" type="bigint">
+                </column>
+            </createTable>
+            <createTable tableName="email">
+                <column name="id" autoIncrement="true" type="bigint">
+                    <constraints primaryKey="true" nullable="false"/>
+                </column>
+                <column name="email" type="varchar">
+                    <constraints nullable="false"/>
+                </column>
+                <column name="contact_id" type="bigint">
+                </column>
+            </createTable>
+            <createTable tableName="numbers_of_phone">
+                <column name="id" autoIncrement="true" type="bigint">
+                    <constraints primaryKey="true" nullable="false"/>
+                </column>
+                <column name="phone_number" type="varchar">
+                    <constraints nullable="false"/>
+                </column>
+                <column name="contact_id" type="bigint">
+                </column>
+            </createTable>
+        </changeSet>
+    <include file="V.0.1.xml" relativeToChangelogFile="true"/>
+</databaseChangeLog>

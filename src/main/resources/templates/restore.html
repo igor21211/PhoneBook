@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script>
+        document.addEventListener("DOMContentLoaded", ()=> {
+            let uri = '/api/'+window.location.href.substring(22,window.location.href.length);
+            fetch(uri,{
+                method:'PATCH'
+            }).then(resp=>resp.json())
+            let referrer_url = document.referrer
+            document.location.href = referrer_url;
+
+        });
+    </script>
+</head>
+<body>
+
+</body>
+</html>

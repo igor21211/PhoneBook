@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>This is email page</title>
+    <script type="text/javascript" th:src="@{/script/email.js}"></script>
+    <link th:rel="stylesheet" type="text/css" th:href="@{/css/style.css}">
+</head>
+<body>
+<h1>Hello its email page </h1>
+
+<div class="emailForm">
+    <input type="text" class="email-name" placeholder="Email">
+    <button class="save-email">Create</button>
+</div>
+<div class="emailTable">
+    <table>
+        <thead>
+        <tr>
+            <th>Email</th>
+            <th>Action</th>
+        </tr>
+        </thead>
+        <tbody>
+
+        </tbody>
+    </table>
+</div>
+</body>
+</html>

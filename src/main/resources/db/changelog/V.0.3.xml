@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns:pro="http://www.liquibase.org/xml/ns/pro"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.4.xsd
+      http://www.liquibase.org/xml/ns/pro https://www.liquibase.org/xml/ns/pro/liquibase-pro-4.5.xsd">
+    <changeSet id="2" author="Igor">
+        <addColumn tableName="email">
+            <column name="is_deleted" type="boolean" value="false">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+        <addColumn tableName="numbers_of_phone">
+            <column name="is_deleted" type="boolean" value="false">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+        <rollback>
+            <sql>ALTER TABLE numbers_of_phone DROP COLUMN isDeleted</sql>
+        </rollback>
+    </changeSet>
+    <include file="V.0.4.xml" relativeToChangelogFile="true"/>
+</databaseChangeLog>
