@@ -122,7 +122,6 @@ public class MainController {
         userService.setToUser(con.getId(), userService.getUserById(id));
         userService.setDataCreatedContact(con.getId());
         return contactMapper.toDto(con);
-
     }
 
     @PutMapping("/users/contact/{user_id}")
@@ -130,28 +129,24 @@ public class MainController {
     public ContactDto updateContact(@PathVariable("user_id") Long id , @RequestBody @Valid ContactDto contact){
         Contact con =  userService.updateContact(id,contactMapper.toContact(contact));
         return contactMapper.toDto(con);
-
     }
 
     @GetMapping("/users/contact/{contact_id}")
     @ResponseStatus(HttpStatus.OK)
     public ContactDto getContact(@PathVariable("contact_id") Long id){
         return contactMapper.toDto(userService.getContactById(id));
-
     }
 
     @PatchMapping("/users/contact/{contact_id}")
     @ResponseStatus(HttpStatus.OK)
     public String removeContact(@PathVariable("contact_id") Long id){
         return userService.removeContactById(id);
-
     }
 
     @PatchMapping("/users/contact/restore/{contact_id}")
     @ResponseStatus(HttpStatus.OK)
     public String restoreContact(@PathVariable("contact_id") Long id){
         return userService.restoreContactById(id);
-
     }
 
     @PostMapping("/users/contact/phone/{contact_id}")
@@ -195,17 +190,16 @@ public class MainController {
     public List<EmailDto> getAllEmails(@PathVariable("contact_id") Long id){
         return emailMapper.toEmailDtoList(userService.getAllEmailByContact(id));
     }
-
     @GetMapping("users/contact/phone/{contact_id}")
     @ResponseStatus(HttpStatus.OK)
     public List<PhoneNumberDto> getAllNumbers(@PathVariable("contact_id") Long id){
         return phoneNumberMapper.toPhoneDtoList(userService.getAllPhonesByContact(id));
     }
 
+
     @PatchMapping("/users/contact/phone/{phone_id}")
     @ResponseStatus(HttpStatus.OK)
     public String removePhone(@PathVariable("phone_id") Long id){
         return userService.removePhoneById(id);
     }
-
 }

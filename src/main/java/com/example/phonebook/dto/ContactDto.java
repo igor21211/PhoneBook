@@ -17,7 +17,6 @@ import java.util.Date;
 import java.util.List;
 
 @Data
-@AllArgsConstructor
 public class ContactDto  {
     public Long id;
     @Pattern(message = "Incorrect first name: ${validatedValue}",

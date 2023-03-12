@@ -1,6 +1,10 @@
 package com.example.phonebook.controller;
 
+import com.example.phonebook.dto.ContactDto;
+
 import com.example.phonebook.dto.UserDto;
+import com.example.phonebook.model.Contact;
+
 import com.example.phonebook.model.User;
 import com.example.phonebook.service.UserService;
 import com.example.phonebook.util.Exeptions.ResourceNotFoundException;
@@ -8,43 +12,48 @@ import com.example.phonebook.util.mappers.ContactMapper;
 import com.example.phonebook.util.mappers.EmailMapper;
 import com.example.phonebook.util.mappers.PhoneNumberMapper;
 import com.example.phonebook.util.mappers.UserMappers;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.http.MediaType;
 
-import org.springframework.test.context.ContextConfiguration;
+
 import org.springframework.test.web.servlet.MockMvc;
 
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
-import java.time.LocalDateTime;
-import java.util.Arrays;
-import java.util.List;
+
 
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
+
+
+import org.junit.jupiter.api.extension.ExtendWith;
+
+import org.mockito.junit.jupiter.MockitoExtension;
+
+@ExtendWith(MockitoExtension.class)
 public class MainControllerTest {
 
     private MockMvc mockMvc;
@@ -145,11 +154,6 @@ public class MainControllerTest {
     }
 
     @Test
-    public void getAllUsers_ShouldReturnPageOfUserDtos() throws Exception {
-
-    }
-
-    @Test
     public void testGetUserById_ShouldReturnOkStatusAndCorrectUser() throws Exception {
         Long userId = 1L;
         User user = new User();
@@ -173,69 +177,87 @@ public class MainControllerTest {
 
     @Test
     public void testGetUserById_ShouldReturnNotFoundStatus_WhenUserNotFound() throws Exception {
-        // Arrange
         Long userId = 1L;
         when(userService.getUserById(userId)).thenThrow(new ResourceNotFoundException("User not found with id = " + userId));
 
-        // Act and Assert
         mockMvc.perform(get("/api/users/{user_id}", userId))
                 .andExpect(status().isNotFound());
     }
 
     @Test
-    void getAllContactsByUser_ShouldReturnPageOfUserContactsDtos() throws Exception {
+    void getContact() throws Exception {
+        Long contactId = 1L;
+        Contact contact = new Contact();
+        ContactDto contactDto = new ContactDto();
+        contactDto.setId(contactId);
+        when(userService.getContactById(contactId)).thenReturn(contact);
+        when(contactMapper.toDto(contact)).thenReturn(contactDto);
 
+        mockMvc.perform(get("/api/users/contact/" + contactId)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
     }
 
     @Test
-    void saveContact() {
+    public void testRemoveContact() throws Exception {
+        long contactId = 1L;
+        when(userService.removeContactById(contactId)).thenReturn("Contact removed successfully");
+        mockMvc.perform(patch("/api/users/contact/{contact_id}", contactId))
+                .andExpect(status().isOk());
     }
 
     @Test
-    void updateContact() {
+    public void restoreContactTest() throws Exception {
+        Long id = 1L;
+        String expectedMessage = "Contact with id " + id + " has been restored";
+
+        when(userService.restoreContactById(id)).thenReturn(expectedMessage);
+
+        mockMvc.perform(patch("/api/users/contact/restore/{contact_id}", id))
+                .andExpect(status().isOk())
+                .andExpect(content().string(expectedMessage));
+
+        verify(userService, times(1)).restoreContactById(id);
+    }
+
+
+    @Test
+    public void testRemoveEmail() throws Exception {
+        Long emailId = 1L;
+        String expectedMessage = "result : successful";
+        Mockito.when(userService.removeEmailById(emailId)).thenReturn(expectedMessage);
+
+        mockMvc.perform(MockMvcRequestBuilders.patch("/api/users/contact/email/{email_id}", emailId))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.content().string(expectedMessage));
     }
 
     @Test
-    void getContact() {
+    public void testRemoveEmailThrowsException() throws Exception {
+        Long emailId = 1L;
+        Mockito.when(userService.removeEmailById(emailId)).thenThrow(new ResourceNotFoundException("Email not found with id = " + emailId));
+
+        mockMvc.perform(MockMvcRequestBuilders.patch("/api/users/contact/email/{email_id}", emailId))
+                .andExpect(MockMvcResultMatchers.status().isNotFound());
     }
 
     @Test
-    void removeContact() {
+    void testRemovePhoneThrowsException() throws Exception {
+        Long phoneId = 1L;
+        Mockito.when(userService.removePhoneById(phoneId)).thenThrow(new ResourceNotFoundException("PhoneNumber not found with id = " + phoneId));
+        mockMvc.perform(MockMvcRequestBuilders.patch("/api/users/contact/phone/{phone_id}", phoneId))
+                .andExpect(MockMvcResultMatchers.status().isNotFound());
     }
 
     @Test
-    void restoreContact() {
+    public void testRemovePhone() throws Exception {
+        Long phoneId = 1L;
+        String expectedMessage = "result : successful";
+        Mockito.when(userService.removePhoneById(phoneId)).thenReturn(expectedMessage);
+
+        mockMvc.perform(MockMvcRequestBuilders.patch("/api/users/contact/phone/{phone_id}", phoneId))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.content().string(expectedMessage));
     }
 
-    @Test
-    void savePhoneNumber() {
-    }
-
-    @Test
-    void updatePhoneNumber() {
-    }
-
-    @Test
-    void saveEmail() {
-    }
-
-    @Test
-    void removeEmail() {
-    }
-
-    @Test
-    void updateEmail() {
-    }
-
-    @Test
-    void getAllEmails() {
-    }
-
-    @Test
-    void getAllNumbers() {
-    }
-
-    @Test
-    void removePhone() {
-    }
 }
