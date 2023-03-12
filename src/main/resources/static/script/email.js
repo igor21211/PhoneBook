@@ -1,6 +1,7 @@
 document.addEventListener("DOMContentLoaded", ()=>{
     let emailTable = document.querySelector(".emailTable");
     let emailForm = document.querySelector(".emailForm");
+    let btnBack = document.querySelector('.back-to-contact');
 
 
     let emailTableComponent = new EmailTable(emailTable);
@@ -11,6 +12,10 @@ document.addEventListener("DOMContentLoaded", ()=>{
     document.addEventListener('click', (e)=>{
                emailTableComponent.update();
     });
+    btnBack.addEventListener('click', ()=>{
+        let referrer_url = document.referrer
+        document.location.href = referrer_url;
+    })
 });
 
 class EmailForm{

@@ -2,6 +2,7 @@ document.addEventListener("DOMContentLoaded", ()=>{
     let contactTable = document.querySelector(".contactTable");
     let contactForm = document.querySelector(".contactForm");
     let contactDelTable = document.querySelector('.contactDeletedTable');
+    let btnBack = document.querySelector('.back-to-users');
 
 
     let contactTableComponent = new ContactTable(contactTable);
@@ -10,6 +11,10 @@ document.addEventListener("DOMContentLoaded", ()=>{
     contactFormComponent.init();
     contactTableComponent.init();
     contactDeletedTableComponent.init();
+
+    btnBack.addEventListener("click", ()=>{
+        document.location.href = "http://localhost:8080/";
+    });
 
 });
 

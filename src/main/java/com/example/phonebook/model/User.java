@@ -50,7 +50,7 @@ public class User {
     @OneToMany(
             mappedBy = "user",
             orphanRemoval = true,
-            cascade = {CascadeType.ALL, CascadeType.REMOVE},
+            cascade = {CascadeType.PERSIST, CascadeType.REMOVE},
             fetch = FetchType.EAGER
     )
     private List<Contact> contactList;

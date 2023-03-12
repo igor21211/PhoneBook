@@ -36,6 +36,8 @@ public class PhoneNumber {
     @Column(name = "is_deleted")
     private Boolean isDeleted = false;
     @JsonBackReference
-    @ManyToOne
+    @ManyToOne(
+            cascade = CascadeType.ALL
+    )
     private Contact contact;
 }

@@ -1,6 +1,7 @@
 document.addEventListener("DOMContentLoaded", ()=>{
     let phoneTable = document.querySelector(".phoneTable");
     let phoneForm = document.querySelector(".phoneForm");
+    let btnBack = document.querySelector('.back-to-contact');
 
 
     let phoneTableComponent = new PhoneTable(phoneTable);
@@ -11,6 +12,10 @@ document.addEventListener("DOMContentLoaded", ()=>{
     document.addEventListener('click', (e)=>{
         phoneTableComponent.update();
     });
+    btnBack.addEventListener('click', ()=>{
+        let referrer_url = document.referrer
+        document.location.href = referrer_url;
+    })
 
 });
 
