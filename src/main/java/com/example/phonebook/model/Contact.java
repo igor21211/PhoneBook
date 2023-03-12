@@ -14,6 +14,7 @@ import lombok.RequiredArgsConstructor;
 
 
 import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.List;
 
 import static jakarta.persistence.GenerationType.SEQUENCE;
@@ -73,17 +74,15 @@ public class Contact {
 
     @Column(
             name = "date_created",
-            columnDefinition = "TIMESTAMP"
+            columnDefinition = "DATE"
     )
-
-    private LocalDateTime dateCreated;
+    private Date dateCreated;
     @Column(
             name = "date_deleted",
-            columnDefinition ="TIMESTAMP"
+            columnDefinition ="DATE"
 
     )
-
-    private LocalDateTime dateDeleted;
+    private Date dateDeleted;
 
     @JsonBackReference
     @ManyToOne(

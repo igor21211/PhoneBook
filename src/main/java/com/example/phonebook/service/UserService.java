@@ -8,6 +8,7 @@ import org.springframework.data.domain.Page;
 
 
 import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.List;
 
 public interface UserService {
@@ -35,7 +36,7 @@ public interface UserService {
     Contact getContactById(Long id);
     Email getEmailById(Long id);
     PhoneNumber getPhoneById(Long id);
-    Page<User> getAllUsers(String firstName, String lastName, Boolean isDeleted, LocalDateTime dateCreated ,int page, int size, List<String> sortList, String sortOrder);
+    Page<User> getAllUsers(String firstName, String lastName, Boolean isDeleted, Date dateCreated , int page, int size, List<String> sortList, String sortOrder);
     Page<Contact> getAllContactsByUser(User user,
                                        String firstName,
                                        String lastName,

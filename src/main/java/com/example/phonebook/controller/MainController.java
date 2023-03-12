@@ -28,6 +28,7 @@ import org.springframework.http.MediaType;
 
 
 import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.List;
 
 
@@ -74,7 +75,7 @@ public class MainController {
     @ResponseStatus(HttpStatus.OK)
     public Page<UserDto> getAllUsers(@RequestParam(required = false) String firstName,
                                      @RequestParam(required = false)String lastName,
-                                     @RequestParam(required = false)LocalDateTime dateCreated,
+                                     @RequestParam(required = false) Date dateCreated,
                                      @RequestParam(defaultValue = "false")Boolean isDeleted,
                                      @RequestParam(defaultValue = "0") int page,
                                      @RequestParam(defaultValue = "10")int size,

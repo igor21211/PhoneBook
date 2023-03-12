@@ -16,6 +16,53 @@ document.addEventListener("DOMContentLoaded", ()=>{
         document.location.href = "http://localhost:8080/";
     });
 
+    const pagination = document.querySelector('.pagination');
+
+    function createPagination(totalPages, currentPage) {
+
+        pagination.innerHTML = '';
+
+        if (currentPage > 0) {
+            const prevButton = createButton(currentPage - 1, 'Назад');
+            pagination.appendChild(prevButton);
+        }
+
+        for (let i = 0; i <= totalPages; i++) {
+            const pageButton = createButton(i, i+1);
+            if (i === currentPage) {
+                pageButton.classList.add('active');
+            }
+            pagination.appendChild(pageButton);
+        }
+
+        if (currentPage < totalPages) {
+            const nextButton = createButton(currentPage + 1, 'Вперед');
+            pagination.appendChild(nextButton);
+        }
+    }
+
+    function createButton(page, text) {
+        const button = document.createElement('button');
+        button.innerText = text;
+        button.addEventListener('click', () => {
+            getData(page);
+        });
+        return button;
+    }
+
+    function getData(page) {
+        let uri = "/api/users/contacts/"+ window.location.href.substring(37,window.location.href.length)+"?page="+page;
+        fetch(uri).then(resp=>resp.json()).then(resp=>{
+            createPagination(resp.totalPages, resp.number);
+            contactTableComponent.show(resp);
+        })
+
+    }
+
+    fetch('/api/'+window.location.href.substring(22,window.location.href.length)).then(resp=>resp.json()).then(resp=>{
+        createPagination(resp.totalPages, resp.number);
+    })
+
 });
 
 class ContactForm{

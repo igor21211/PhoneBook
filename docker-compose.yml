@@ -11,4 +11,4 @@ services:
       POSTGRES_PASSWORD: "0191"
       PGDATA: /var/lib/postgresql/data/pgdata
     volumes:
-      - /infrastrackters/pgdata:/var/lib/postgresql/data \
+      - /infrastructures/pgdata:/var/lib/postgresql/data \

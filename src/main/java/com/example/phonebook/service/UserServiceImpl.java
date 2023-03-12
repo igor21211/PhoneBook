@@ -22,9 +22,9 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
-import javax.swing.text.StyledEditorKit;
-import java.time.LocalDateTime;
+
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -49,7 +49,7 @@ public class UserServiceImpl implements UserService {
     public String removeUserById(Long id) {
         userRepository.findById(id).map(
                 user -> {
-                    user.setDateDeleted(LocalDateTime.now());
+                    user.setDateDeleted(new Date());
                     user.setIsDeleted(true);
                     return userRepository.save(user);
                 }
@@ -61,7 +61,7 @@ public class UserServiceImpl implements UserService {
     public String setDataCreatedUsers(Long id) {
          userRepository.findById(id).map(
                 user -> {
-                    user.setDateCreated(LocalDateTime.now());
+                    user.setDateCreated(new Date());
                     return userRepository.save(user);
                 }
         ).orElseThrow(() -> new ResourceNotFoundException("User not found with id = " + id));
@@ -107,7 +107,7 @@ public class UserServiceImpl implements UserService {
     public String removeContactById(Long id) {
         contactRepository.findById(id).map(
                 contact -> {
-                    contact.setDateDeleted(LocalDateTime.now());
+                    contact.setDateDeleted(new Date());
                     contact.setIsDeleted(true);
                     return contactRepository.save(contact);
                 }
@@ -119,7 +119,7 @@ public class UserServiceImpl implements UserService {
     public String setDataCreatedContact(Long id) {
         contactRepository.findById(id).map(
                 contact -> {
-                    contact.setDateCreated(LocalDateTime.now());
+                    contact.setDateCreated(new Date());
                     return contactRepository.save(contact);
                 }
         ).orElseThrow(() -> new ResourceNotFoundException("Contact not found with id = " + id));
@@ -269,11 +269,11 @@ public class UserServiceImpl implements UserService {
         return phoneNumber;
     }
     @Override
-    public Page<User> getAllUsers(String firstName, String lastName, Boolean isDeleted, LocalDateTime dateCreated, int page, int size, List<String> sortList, String sortOrder) {
+    public Page<User> getAllUsers(String firstName, String lastName, Boolean isDeleted, Date dateCreated, int page, int size, List<String> sortList, String sortOrder) {
         Pageable pageable = PageRequest.of(page, size, Sort.by(createSortOrder(sortList, sortOrder)));
         return userRepository.findAll(getUserSpecificator(firstName,lastName, isDeleted, dateCreated), pageable);
     }
-    private Specification<User> getUserSpecificator(final String firstName, final String lastName, final Boolean isDeleted, final LocalDateTime dateCreated){
+    private Specification<User> getUserSpecificator(final String firstName, final String lastName, final Boolean isDeleted, final Date dateCreated){
         return ((root, query, criteriaBuilder) -> {
             Predicate predicate = criteriaBuilder.and();
             if(dateCreated!=null) predicate=criteriaBuilder.and(predicate,criteriaBuilder.equal(root.get("dateCreated"), dateCreated));

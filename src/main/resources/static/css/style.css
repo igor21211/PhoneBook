@@ -135,4 +135,26 @@ table {
 .back-to-users{
     text-align: center;
 }
+.pagination {
+    display: inline-block;
+    margin: 10px 0;
+}
 
+.pagination button {
+    color: black;
+    float: left;
+    padding: 8px 16px;
+    text-decoration: none;
+    border: 1px solid #ddd;
+}
+
+.pagination button.active {
+    background-color: #4CAF50;
+    color: white;
+    border: 1px solid #4CAF50;
+}
+
+.pagination button:hover:not(.active) {
+    background-color: #ddd;
+    border: 1px solid #ddd;
+}

@@ -7,9 +7,9 @@
       http://www.liquibase.org/xml/ns/pro https://www.liquibase.org/xml/ns/pro/liquibase-pro-4.5.xsd">
     <changeSet id="2" author="Igor">
         <addColumn tableName="users">
-            <column name="date_created" type="timestamp" >
+            <column name="date_created" type="date" >
             </column>
-            <column name="date_deleted" type="timestamp" >
+            <column name="date_deleted" type="date" >
             </column>
         </addColumn>
         <rollback>
@@ -17,9 +17,9 @@
             <sql>ALTER TABLE users DROP COLUMN date_created</sql>
         </rollback>
         <addColumn tableName="contact">
-            <column name="date_created" type="timestamp" >
+            <column name="date_created" type="date" >
             </column>
-            <column name="date_deleted" type="timestamp" >
+            <column name="date_deleted" type="date" >
             </column>
         </addColumn>
         <rollback>

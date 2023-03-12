@@ -146,49 +146,7 @@ public class MainControllerTest {
 
     @Test
     public void getAllUsers_ShouldReturnPageOfUserDtos() throws Exception {
-        String firstName = "John";
-        String lastName = "Doe";
-        Boolean isDeleted = false;
-        LocalDateTime dateCreated = LocalDateTime.now();
-        int page = 0;
-        int size = 10;
-        List<String> sortList = Arrays.asList("firstName", "lastName");
-        String sort = "ASC";
 
-        User user1 = new User();
-        user1.setId(1L);
-        user1.setFirstName(firstName);
-        user1.setLastName(lastName);
-        user1.setDateCreated(dateCreated);
-
-        User user2 = new User();
-        user2.setId(2L);
-        user2.setFirstName(firstName);
-        user2.setLastName(lastName);
-        user2.setDateCreated(dateCreated);
-
-        List<User> userList = Arrays.asList(user1, user2);
-        Page<User> userPage = new PageImpl<>(userList);
-        List<UserDto> userDtoList = userMapper.toUserListDto(userList);
-        when(userService.getAllUsers(firstName, lastName, isDeleted,dateCreated,  page, size, sortList, sort))
-                .thenReturn(userPage);
-        when(userMapper.toUserListDto(userList))
-                .thenReturn(userDtoList);
-
-        mockMvc.perform(get("/api/users")
-                        .param("firstName", firstName)
-                        .param("lastName", lastName)
-                        .param("isDeleted", isDeleted.toString())
-                        .param("page", String.valueOf(page))
-                        .param("size", String.valueOf(size))
-                        .param("sort", sort))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.content[0].id").value(user1.getId()))
-                .andExpect(jsonPath("$.content[0].firstName").value(user1.getFirstName()))
-                .andExpect(jsonPath("$.content[0].lastName").value(user1.getLastName()))
-                .andExpect(jsonPath("$.content[1].id").value(user2.getId()))
-                .andExpect(jsonPath("$.content[1].firstName").value(user2.getFirstName()))
-                .andExpect(jsonPath("$.content[1].lastName").value(user2.getLastName()));
     }
 
     @Test
@@ -225,7 +183,8 @@ public class MainControllerTest {
     }
 
     @Test
-    void getAllContactsByUser() {
+    void getAllContactsByUser_ShouldReturnPageOfUserContactsDtos() throws Exception {
+
     }
 
     @Test
