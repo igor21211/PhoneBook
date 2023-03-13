@@ -23,4 +23,3 @@ PhoneBook - это полезное приложение для хранения
 
 ![2](http://img.serpstat.com/tobi/63N5QR.jpg)
 ![2](http://img.serpstat.com/tobi/63N8DZ.jpg)
-![2](http://img.serpstat.com/tobi/63N8DZ.jpg)
