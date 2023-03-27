@@ -20,12 +20,15 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @AllArgsConstructor
@@ -37,13 +40,29 @@ public class UserServiceImpl implements UserService {
     private final ContactRepository contactRepository;
     private final EmailRepository emailRepository;
     private final PhoneNumberRepository phoneNumberRepository;
-
+    private final PasswordEncoder passwordEncoder;
 
 
     @Override
-    public User create(User user) {
-        return userRepository.save(user);
+    public User singIn(String login, String pass) {
+        User user = userRepository.findByLogin(login)
+                .orElseThrow(()-> new IllegalArgumentException("Fail"));
+        if(!passwordEncoder.matches(pass,user.getPassword())){
+            throw new IllegalArgumentException("Fail");
+        }
+        return user;
     }
+
+    @Override
+    public User register(User user) {
+        if(userRepository.findByLogin(user.getLogin()).isPresent()){
+            throw new UsernameNotFoundException("This user already exist");
+        }
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
+        user.setRole("registry");
+       return userRepository.save(user);
+    }
+
 
     @Override
     public String removeUserById(Long id) {
@@ -51,17 +70,6 @@ public class UserServiceImpl implements UserService {
                 user -> {
                     user.setDateDeleted(new Date());
                     user.setIsDeleted(true);
-                    return userRepository.save(user);
-                }
-        ).orElseThrow(() -> new ResourceNotFoundException("User not found with id = " + id));
-        return "result : successful";
-    }
-
-    @Override
-    public String setDataCreatedUsers(Long id) {
-         userRepository.findById(id).map(
-                user -> {
-                    user.setDateCreated(new Date());
                     return userRepository.save(user);
                 }
         ).orElseThrow(() -> new ResourceNotFoundException("User not found with id = " + id));
@@ -330,5 +338,10 @@ public class UserServiceImpl implements UserService {
                 .stream()
                 .filter(phoneNumber -> phoneNumber.getIsDeleted()!=true)
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public Optional<User> findUser(String login) {
+        return userRepository.findByLogin(login);
     }
 }

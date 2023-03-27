@@ -45,13 +45,15 @@ class UserServiceImplTest {
     @Mock
     private EmailRepository emailRepository;
 
+
+
     @Mock
     private PhoneNumberRepository phoneNumberRepository;
 
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
-        userService = new UserServiceImpl(userRepository, contactRepository, emailRepository, phoneNumberRepository);
+        userService = new UserServiceImpl(,userRepository, contactRepository, emailRepository, phoneNumberRepository);
     }
 
 

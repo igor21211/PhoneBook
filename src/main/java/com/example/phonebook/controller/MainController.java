@@ -4,10 +4,8 @@ import com.example.phonebook.dto.ContactDto;
 import com.example.phonebook.dto.EmailDto;
 import com.example.phonebook.dto.PhoneNumberDto;
 import com.example.phonebook.dto.UserDto;
-import com.example.phonebook.model.Contact;
-import com.example.phonebook.model.Email;
-import com.example.phonebook.model.PhoneNumber;
-import com.example.phonebook.model.User;
+import com.example.phonebook.model.*;
+import com.example.phonebook.service.JwtService;
 import com.example.phonebook.service.UserService;
 
 
@@ -19,15 +17,14 @@ import com.example.phonebook.util.mappers.UserMappers;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.http.MediaType;
+import org.springframework.web.bind.annotation.ResponseStatus;
 
 
-import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 
@@ -39,36 +36,49 @@ import java.util.List;
 public class MainController {
     private final UserService userService;
 
+    private final JwtService jwtService;
     private final UserMappers userMapper;
     private final ContactMapper contactMapper;
     private final PhoneNumberMapper phoneNumberMapper;
     private final EmailMapper emailMapper;
 
 
-    @PostMapping("/users")
-    @ResponseStatus(HttpStatus.CREATED)
-    public UserDto saveUser(@RequestBody @Valid UserDto userDto){
-        User user = userService.create(userMapper.toUser(userDto));
-        userService.setDataCreatedUsers(user.getId());
-       return userMapper.toDto(user);
-    }
-    @PatchMapping("/users/restore/{user_id}")
+    @PostMapping("/login")
     @ResponseStatus(HttpStatus.OK)
-    public String restoreUserById(@PathVariable("user_id") Long user_id){
-        return userService.restoreUsersById(user_id);
+    public Response login(@RequestBody LoginRequest loginRequest) {
+       User user =  userService.singIn(loginRequest.getLogin(),loginRequest.getPassword());
+        String token = (jwtService.createToken(user));
+        return Response.ok(token);
+    }
+    @PostMapping("/registration")
+    @ResponseStatus(HttpStatus.OK)
+    public Response registry(@RequestBody User user){
+        userService.register(user);
+        return Response.ok(null);
     }
 
-    @PatchMapping("/users/remove/{user_id}")
+    @PatchMapping("/users/restore/")
     @ResponseStatus(HttpStatus.OK)
-    public String deleteUserById(@PathVariable("user_id") Long user_id){
-        return userService.removeUserById(user_id);
+    public Response restoreUserById(@RequestHeader("Authorization") String token){
+        User userToken = jwtService.extractUser(token.substring("Bearer ".length()));
+        userService.restoreUsersById(userToken.getId());
+        return Response.ok("successful");
     }
 
-    @PutMapping("/users/{user_id}")
+    @PatchMapping("/users/remove/")
+    @ResponseStatus(HttpStatus.OK)
+    public Response deleteUserById(@RequestHeader("Authorization") String token){
+        User userToken = jwtService.extractUser(token.substring("Bearer ".length()));
+        userService.removeUserById(userToken.getId());
+        return Response.ok("successful");
+    }
+
+    @PutMapping("/users/")
     @ResponseStatus(HttpStatus.CREATED)
-    public UserDto updateUser(@PathVariable("user_id") Long user_id, @RequestBody @Valid UserDto userDto){
-        User user = userService.updateUser(user_id, userMapper.toUser(userDto));
-        return userMapper.toDto(user);
+    public UserDto updateUser(@RequestHeader("Authorization") String token, @RequestBody @Valid UserDto userDto){
+        User userToken = jwtService.extractUser(token.substring("Bearer ".length()));
+        User userNew = userService.updateUser(userToken.getId(), userMapper.toUser(userDto));
+        return userMapper.toDto(userNew);
     }
 
     @GetMapping("/users")
@@ -90,15 +100,16 @@ public class MainController {
         return userDtoPageDtos;
     }
 
-    @GetMapping("/users/{user_id}")
+    @GetMapping("/users/")
     @ResponseStatus(HttpStatus.OK)
-    public UserDto getUserById(@PathVariable("user_id") Long user_id){
-        return userMapper.toDto(userService.getUserById(user_id));
+    public UserDto getUserById(@RequestHeader("Authorization") String token){
+        User user = jwtService.extractUser(token.substring("Bearer ".length()));
+        return userMapper.toDto(userService.getUserById(user.getId()));
     }
 
-    @GetMapping("/users/contacts/{user_id}")
+    @GetMapping("/users/contacts")
     @ResponseStatus(HttpStatus.OK)
-    public Page<ContactDto> getAllContactsByUser(@PathVariable("user_id") Long user_id,
+    public Response getAllContactsByUser(@RequestHeader("Authorization") String token,
                                                  @RequestParam(required = false) String firstName,
                                                  @RequestParam(required = false)String lastName,
                                                  @RequestParam(defaultValue = "false") Boolean isDeleted,
@@ -106,35 +117,38 @@ public class MainController {
                                                  @RequestParam(defaultValue = "10")int size,
                                                  @RequestParam(defaultValue = "") List<String> sortList,
                                                  @RequestParam(defaultValue = "DESC") String sort){
-      Page<Contact> contactPage =  userService.getAllContactsByUser(userService.getUserById(user_id),firstName,lastName,isDeleted, page,size,sortList,sort);
+        User user = jwtService.extractUser(token.substring("Bearer ".length()));
+      Page<Contact> contactPage =  userService.getAllContactsByUser(userService.getUserById(user.getId()),firstName,lastName,isDeleted, page,size,sortList,sort);
         Page<ContactDto> contactDtos = new PageImpl<>(
                 contactMapper.toContactDtoList(contactPage.getContent()),
                 contactPage.getPageable(),
                 contactPage.getTotalElements()
         );
-        return contactDtos;
+        return Response.ok(contactDtos);
     }
 
     @PostMapping("/users/contact/{user_id}")
     @ResponseStatus(HttpStatus.CREATED)
-    public ContactDto saveContact(@PathVariable("user_id") Long id , @RequestBody @Valid ContactDto contact){
+    public Response saveContact(@RequestHeader("Authorization") String token , @RequestBody @Valid ContactDto contact){
+        User user = jwtService.extractUser(token.substring("Bearer ".length()));
         Contact con =  userService.create(contactMapper.toContact(contact));
-        userService.setToUser(con.getId(), userService.getUserById(id));
+        userService.setToUser(con.getId(), userService.getUserById(user.getId()));
         userService.setDataCreatedContact(con.getId());
-        return contactMapper.toDto(con);
+        return Response.ok(contactMapper.toDto(con));
     }
 
     @PutMapping("/users/contact/{user_id}")
     @ResponseStatus(HttpStatus.OK)
-    public ContactDto updateContact(@PathVariable("user_id") Long id , @RequestBody @Valid ContactDto contact){
-        Contact con =  userService.updateContact(id,contactMapper.toContact(contact));
-        return contactMapper.toDto(con);
+    public Response updateContact(@RequestHeader("Authorization") String token, @RequestBody @Valid ContactDto contact){
+        User user = jwtService.extractUser(token.substring("Bearer ".length()));
+        Contact con =  userService.updateContact(user.getId(),contactMapper.toContact(contact));
+        return Response.ok(contactMapper.toDto(con));
     }
 
     @GetMapping("/users/contact/{contact_id}")
     @ResponseStatus(HttpStatus.OK)
-    public ContactDto getContact(@PathVariable("contact_id") Long id){
-        return contactMapper.toDto(userService.getContactById(id));
+    public Response getContact(@PathVariable("contact_id") Long id){
+        return Response.ok(contactMapper.toDto(userService.getContactById(id)));
     }
 
     @PatchMapping("/users/contact/{contact_id}")

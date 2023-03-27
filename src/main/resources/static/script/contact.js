@@ -12,9 +12,6 @@ document.addEventListener("DOMContentLoaded", ()=>{
     contactTableComponent.init();
     contactDeletedTableComponent.init();
 
-    btnBack.addEventListener("click", ()=>{
-        document.location.href = "http://localhost:8080/";
-    });
 
     const pagination = document.querySelector('.pagination');
 
@@ -71,6 +68,7 @@ class ContactForm{
         this.inputLastName = form.querySelector(".contact-last-name");
         this.button = form.querySelector("button");
         this.addListener = addListener;
+
     }
     init(){
         this.button.addEventListener("click", ()=> this.register());
@@ -79,14 +77,16 @@ class ContactForm{
     register(){
         let firstName = this.inputFirstName.value;
         let lastName = this.inputLastName.value;
-
+        const token = document.cookie.replace(/(?:(?:^|.*;\s*)token\s*\=\s*([^;]*).*$)|^.*$/, "$1");
         fetch("/api/users/contact/"+ window.location.href.substring(37,window.location.href.length),{
             method: "POST",
             body: JSON.stringify({
                 firstName,lastName
             }),
             headers:{
-                "Content-Type":"application/json"
+                "Content-Type":"application/json",
+                "Authorization": `Bearer ${token}`
+
             }
         })
             .then(resp => resp.json())
@@ -115,7 +115,7 @@ class ContactTable{
     update(){
         let firstName = this.inputfirstName.value;
         let lastName = this.inputlastName.value;
-
+        const token = document.cookie.replace(/(?:(?:^|.*;\s*)token\s*\=\s*([^;]*).*$)|^.*$/, "$1");
         let uri = '/api/'+window.location.href.substring(22,window.location.href.length);
         if(firstName!=""|| lastName!=""){
             let params =[];
@@ -130,7 +130,11 @@ class ContactTable{
             uri+="?"+(params.join("&"));
         }
 
-        fetch(uri)
+        fetch(uri,{
+            headers:{
+                "Authorization": `Bearer ${token}`
+            }
+        })
             .then(resp=>resp.json())
             .then(resp=>{
                 this.show(resp);
@@ -140,7 +144,7 @@ class ContactTable{
 
     show(resp){
         let html = "";
-        for(let contact of resp.content){
+        for(let contact of resp.data.content){
             html+=`<tr><td>${contact.firstName}</td><td>${contact.lastName}</td><td>${contact.dateCreated}</td><td><a href="/users/contact/email/${contact.id}">Emails</a></td><td><a href="/users/contact/phone/${contact.id}">Phone</a></td><td><a class="open-popup" href="/users/contact/${contact.id}">Delete</a></td><td><a class="open-popup" href="/users/contact/${contact.id}/">Update</a></td></tr>`;
         }
         this.tbody.innerHTML= html;
@@ -185,11 +189,12 @@ class ContactDelTable{
             .then(resp=>resp.json())
             .then(resp=>{
                 this.show(resp);
+                console.log(resp.data)
             })
     }
     show(resp){
         let html = "";
-        for(let contact of resp.content){
+        for(let contact of resp.data.content){
             html+=`<tr><td>${contact.firstName}</td><td>${contact.lastName}</td><td>${contact.dateDeleted}</td><td><a href="/users/contact/restore/${contact.id}">Restore</a></td></tr>`;
         }
         this.tbody.innerHTML= html;

@@ -1,15 +1,31 @@
 package com.example.phonebook.controller;
 
+import com.example.phonebook.model.User;
+import com.example.phonebook.service.JwtService;
+import com.example.phonebook.service.UserService;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.*;
 
 @Controller
+@AllArgsConstructor
 public class ViewController {
+
+    @RequestMapping("/login")
+    public String login(@RequestParam(value = "error", required = false) String error,
+                        @RequestParam(value = "logout", required = false) String logout,
+                        Model model){
+        model.addAttribute("error", error !=null);
+        model.addAttribute("logout", logout !=null);
+        return "login";
+    }
     @GetMapping("/")
     public String index(){
         return "index";
     }
-    @GetMapping("/users/contacts/{id}")
+    @GetMapping("/users/contacts")
     public String contact(){
         return "contact";
     }

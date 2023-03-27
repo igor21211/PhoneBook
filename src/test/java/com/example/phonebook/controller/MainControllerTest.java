@@ -6,6 +6,7 @@ import com.example.phonebook.dto.UserDto;
 import com.example.phonebook.model.Contact;
 
 import com.example.phonebook.model.User;
+import com.example.phonebook.service.JwtService;
 import com.example.phonebook.service.UserService;
 import com.example.phonebook.util.Exeptions.ResourceNotFoundException;
 import com.example.phonebook.util.mappers.ContactMapper;
@@ -14,6 +15,7 @@ import com.example.phonebook.util.mappers.PhoneNumberMapper;
 import com.example.phonebook.util.mappers.UserMappers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.AllArgsConstructor;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -52,7 +54,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import org.junit.jupiter.api.extension.ExtendWith;
 
 import org.mockito.junit.jupiter.MockitoExtension;
-
+@AllArgsConstructor
 @ExtendWith(MockitoExtension.class)
 public class MainControllerTest {
 
@@ -72,11 +74,15 @@ public class MainControllerTest {
 
     @Mock
     private EmailMapper emailMapper;
+    @Mock
+    private final JwtService jwtService;
+
+
 
     @BeforeEach
     public void setUp() {
         MockitoAnnotations.initMocks(this);
-        MainController mainController = new MainController(userService, userMapper, contactMapper, phoneNumberMapper, emailMapper);
+        MainController mainController = new MainController(userService, jwtService,userMapper, contactMapper, phoneNumberMapper, emailMapper);
         mockMvc = MockMvcBuilders.standaloneSetup(mainController).build();
     }
 

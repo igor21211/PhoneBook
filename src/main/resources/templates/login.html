@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Login Form</title>
+    <meta charset="UTF-8">
+</head>
+<body>
+<h1>Login Form</h1>
+<form id="loginForm">
+    <label for="username">Username:</label>
+    <input type="text" id="username" name="username" required><br><br>
+    <label for="password">Password:</label>
+    <input type="password" id="password" name="password" required><br><br>
+    <button type="submit">Login</button>
+</form>
+<script>
+    const form = document.getElementById('loginForm');
+    form.addEventListener('submit', function(event) {
+        event.preventDefault();
+        const data = new FormData(form);
+        const request = new XMLHttpRequest();
+        request.open('POST', 'api/login');
+        request.setRequestHeader('Content-Type', 'application/json');
+        request.onload = function() {
+            if (request.status === 200) {
+                try {
+                    const response = JSON.parse(request.response);
+                    console.log(response.data)
+                    document.cookie = `token=${response.data}; Path=/`;
+                    window.location.href = '/home'; // Redirect to home page
+                } catch (error) {
+                    console.error('Failed to parse JSON response', error);
+                    alert('Login failed.');
+                }
+            } else {
+                console.error(`Login failed with status ${request.status}`);
+                alert('Login failed.');
+            }
+        };
+        request.send(JSON.stringify({
+            login: data.get('username'),
+            password: data.get('password')
+        }));
+    });
+</script>
+</body>
+</html>

@@ -76,7 +76,7 @@ public class Contact {
             name = "date_created",
             columnDefinition = "DATE"
     )
-    private Date dateCreated;
+    private Date dateCreated = new Date();
     @Column(
             name = "date_deleted",
             columnDefinition ="DATE"

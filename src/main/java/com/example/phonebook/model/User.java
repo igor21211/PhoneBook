@@ -5,9 +5,7 @@ import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 
 
-
 import lombok.Data;
-
 
 
 import java.time.LocalDateTime;
@@ -33,7 +31,21 @@ public class User {
     )
     private Long id;
 
-
+    @Column(
+            name = "login",
+            nullable = false
+    )
+    private String login;
+    @Column(
+            name = "password",
+            nullable = false
+    )
+    private String password;
+    @Column(
+            name = "role",
+            nullable = false
+    )
+    private String role;
     @Column(
             name = "first_name",
             nullable = false,
@@ -62,10 +74,10 @@ public class User {
             name = "date_created",
             columnDefinition = "DATE"
     )
-    private Date dateCreated;
+    private Date dateCreated = new Date();
     @Column(
             name = "date_deleted",
-            columnDefinition ="DATE"
+            columnDefinition = "DATE"
     )
     private Date dateDeleted;
 

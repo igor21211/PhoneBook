@@ -5,27 +5,27 @@
         xmlns:pro="http://www.liquibase.org/xml/ns/pro"
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.4.xsd
       http://www.liquibase.org/xml/ns/pro https://www.liquibase.org/xml/ns/pro/liquibase-pro-4.5.xsd">
-    <changeSet id="2" author="Igor">
+    <changeSet id="6" author="Igor">
         <addColumn tableName="users">
-            <column name="date_created" type="date" >
-            </column>
-            <column name="date_deleted" type="date" >
+            <column name="login" type="varchar">
             </column>
         </addColumn>
         <rollback>
-            <sql>ALTER TABLE users DROP COLUMN date_deleted</sql>
-            <sql>ALTER TABLE users DROP COLUMN date_created</sql>
+            <sql>ALTER TABLE DELETE COLUMN login</sql>
         </rollback>
-        <addColumn tableName="contact">
-            <column name="date_created" type="date" >
-            </column>
-            <column name="date_deleted" type="date" >
+        <addColumn tableName="users">
+            <column name="password" type="varchar">
             </column>
         </addColumn>
         <rollback>
-            <sql>ALTER TABLE contact DROP COLUMN date_deleted</sql>
-            <sql>ALTER TABLE contact DROP COLUMN date_created</sql>
+            <sql>ALTER TABLE DELETE COLUMN password</sql>
+        </rollback>
+        <addColumn tableName="users">
+            <column name="role" type="varchar">
+            </column>
+        </addColumn>
+        <rollback>
+            <sql>ALTER TABLE DELETE COLUMN role</sql>
         </rollback>
     </changeSet>
-    <include file="V.0.5.xml" relativeToChangelogFile="true"/>
 </databaseChangeLog>
