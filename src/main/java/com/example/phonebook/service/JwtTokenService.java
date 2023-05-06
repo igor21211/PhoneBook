@@ -31,7 +31,7 @@ public class JwtTokenService implements JwtService{
         UserDetails userDetails = new MyUserDetails(user);
         Claims claims = Jwts.claims()
                 .setSubject(userDetails.getUsername());
-        claims.put("role",userDetails.getAuthorities());
+        claims.put("role","registry");
 
         Date now = new Date();
         Date expire = new Date(now.getTime()+ EXPIRE_TIME_S*24000);

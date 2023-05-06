@@ -13,19 +13,26 @@ import org.springframework.web.bind.annotation.*;
 @AllArgsConstructor
 public class ViewController {
 
-    @RequestMapping("/login")
-    public String login(@RequestParam(value = "error", required = false) String error,
-                        @RequestParam(value = "logout", required = false) String logout,
-                        Model model){
-        model.addAttribute("error", error !=null);
-        model.addAttribute("logout", logout !=null);
+    @GetMapping("/login")
+    public String login(Model model, String error, String logout) {
+        if (error != null)
+            model.addAttribute("error", "Your username and password is invalid.");
+
+        if (logout != null)
+            model.addAttribute("message", "You have been logged out successfully.");
+
         return "login";
+    }
+
+    @GetMapping("/registration")
+    public String registration(){
+        return "registration";
     }
     @GetMapping("/")
     public String index(){
         return "index";
     }
-    @GetMapping("/users/contacts")
+    @GetMapping("/users/contacts/{id}")
     public String contact(){
         return "contact";
     }

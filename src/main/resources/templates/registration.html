@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Registration Form</title>
+  <style>
+    /* Стили для формы */
+    form {
+      width: 400px;
+      margin: 0 auto;
+      padding: 20px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+
+    /* Стили для полей ввода */
+    input[type="text"], input[type="password"] {
+      width: 100%;
+      padding: 12px 20px;
+      margin: 8px 0;
+      display: inline-block;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      box-sizing: border-box;
+    }
+
+    /* Стили для кнопки отправки формы */
+    input[type="button"] {
+      display: block;
+      width: 100%;
+      padding: 10px;
+      background-color: #706d97;
+      color: #fff;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    /* Стили для кнопки сброса формы */
+    input[type="reset"] {
+      background-color: #f44336;
+      color: white;
+      padding: 12px 20px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      float: right;
+      margin-right: 10px;
+    }
+
+    /* Стили для заголовка формы */
+    h2 {
+      text-align: center;
+    }
+  </style>
+  <script>
+    document.addEventListener("DOMContentLoaded", ()=>{
+      let userForm = document.querySelector(".registration-form");
+      let userTableComponent = new UserForm(userForm);
+      userTableComponent.init()
+    });
+
+    class UserForm{
+      constructor(form) {
+        this.inputlogin = form.querySelector(".login");
+        this.inputpassword = form.querySelector(".password");
+        this.inputfirstname = form.querySelector(".firstName");
+        this.inputlastname = form.querySelector(".lastName");
+        this.btncreate = form.querySelector(".btnCreate");
+
+      }
+
+      init(){
+        this.btncreate.addEventListener("click",()=> this.singUp());
+      }
+
+      singUp(){
+        let login = this.inputlogin.value;
+        let password = this.inputpassword.value;
+        let firstName = this.inputfirstname.value;
+        let lastName = this.inputlastname.value;
+
+        fetch("/api/registration", {
+          method: "POST",
+          body: JSON.stringify({
+            login, password, firstName, lastName
+          }),
+          headers:{
+            "Content-Type":"application/json"
+          }
+        })
+                .then(resp=>resp.json())
+                .then(resp=>{
+                  if(resp){
+                    window.location.href = '/login'; // Redirect to login
+                  }else{
+                    alert(resp.message)
+                  }
+                })
+    }
+    }
+  </script>
+</head>
+<body>
+<h2>Registration Form</h2>
+<form class="registration-form">
+  <div class="form-group">
+    <label for="login">Login:</label>
+    <input type="text" class="login" id="login" required>
+  </div>
+  <div class="form-group">
+    <label for="password">Password:</label>
+    <input type="password" class="password" id="password" required>
+  </div>
+  <div class="form-group">
+    <label for="firstName">First Name:</label>
+    <input type="text" class="firstName" id="firstName" required>
+  </div>
+  <div class="form-group">
+    <label for="lastName">Last Name:</label>
+    <input type="text" class="lastName" id="lastName" required>
+  </div>
+  <button type="button" class="btnCreate">Submit</button>
+</form>
+</body>
+</html>

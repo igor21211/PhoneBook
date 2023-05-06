@@ -33,7 +33,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 @ExtendWith(MockitoExtension.class)
 class UserServiceImplTest {
-
+    @InjectMocks
     private UserServiceImpl userService;
 
     @Mock
@@ -50,11 +50,7 @@ class UserServiceImplTest {
     @Mock
     private PhoneNumberRepository phoneNumberRepository;
 
-    @BeforeEach
-    void setUp() {
-        MockitoAnnotations.openMocks(this);
-        userService = new UserServiceImpl(,userRepository, contactRepository, emailRepository, phoneNumberRepository);
-    }
+
 
 
 
@@ -66,7 +62,7 @@ class UserServiceImplTest {
 
         when(userRepository.save(ArgumentMatchers.any(User.class))).thenReturn(user);
 
-        User created = userService.create(user);
+        User created = userService.register(user);
         assertThat(created.getFirstName()).isSameAs(user.getFirstName());
         assertThat(created.getLastName()).isSameAs(user.getLastName());
         verify(userRepository).save(user);
@@ -263,7 +259,7 @@ class UserServiceImplTest {
         user.setLastName("Doe");
         when(userRepository.save(user)).thenReturn(user);
 
-        User result = userService.create(user);
+        User result = userService.register(user);
         assertEquals(user, result);
     }
 

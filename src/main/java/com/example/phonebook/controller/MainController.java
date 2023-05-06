@@ -6,6 +6,7 @@ import com.example.phonebook.dto.PhoneNumberDto;
 import com.example.phonebook.dto.UserDto;
 import com.example.phonebook.model.*;
 import com.example.phonebook.service.JwtService;
+import com.example.phonebook.service.JwtTokenService;
 import com.example.phonebook.service.UserService;
 
 
@@ -20,6 +21,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -41,13 +46,15 @@ public class MainController {
     private final ContactMapper contactMapper;
     private final PhoneNumberMapper phoneNumberMapper;
     private final EmailMapper emailMapper;
+    private final JwtTokenService jwtTokenService;
 
 
     @PostMapping("/login")
-    @ResponseStatus(HttpStatus.OK)
     public Response login(@RequestBody LoginRequest loginRequest) {
-       User user =  userService.singIn(loginRequest.getLogin(),loginRequest.getPassword());
-        String token = (jwtService.createToken(user));
+        User user = userService.findUser(loginRequest.getLogin()).orElseThrow();
+        String token = jwtTokenService.createToken(user);
+        Authentication authentication = jwtTokenService.createAuthentication(token);
+        SecurityContextHolder.getContext().setAuthentication(authentication);
         return Response.ok(token);
     }
     @PostMapping("/registration")

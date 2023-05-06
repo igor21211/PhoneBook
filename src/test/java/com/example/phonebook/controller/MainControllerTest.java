@@ -7,6 +7,7 @@ import com.example.phonebook.model.Contact;
 
 import com.example.phonebook.model.User;
 import com.example.phonebook.service.JwtService;
+import com.example.phonebook.service.JwtTokenService;
 import com.example.phonebook.service.UserService;
 import com.example.phonebook.util.Exeptions.ResourceNotFoundException;
 import com.example.phonebook.util.mappers.ContactMapper;
@@ -23,6 +24,8 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 
 
@@ -56,33 +59,36 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 @AllArgsConstructor
 @ExtendWith(MockitoExtension.class)
+@WebMvcTest
 public class MainControllerTest {
 
     private MockMvc mockMvc;
 
-    @Mock
+    @MockBean
     private UserService userService;
 
-    @Mock
+    @MockBean
     private UserMappers userMapper;
 
-    @Mock
+    @MockBean
     private ContactMapper contactMapper;
 
-    @Mock
+    @MockBean
     private PhoneNumberMapper phoneNumberMapper;
 
-    @Mock
+    @MockBean
     private EmailMapper emailMapper;
-    @Mock
+    @MockBean
     private final JwtService jwtService;
+    @MockBean
+    private final JwtTokenService jwtTokenService;
 
 
 
     @BeforeEach
     public void setUp() {
         MockitoAnnotations.initMocks(this);
-        MainController mainController = new MainController(userService, jwtService,userMapper, contactMapper, phoneNumberMapper, emailMapper);
+        MainController mainController = new MainController(userService, jwtService,userMapper, contactMapper, phoneNumberMapper, emailMapper,jwtTokenService);
         mockMvc = MockMvcBuilders.standaloneSetup(mainController).build();
     }
 
@@ -92,7 +98,7 @@ public class MainControllerTest {
         UserDto userDto = new UserDto();
         User user = new User();
         when(userMapper.toUser(eq(userDto))).thenReturn(user);
-        when(userService.create(eq(user))).thenReturn(user);
+        when(userService.register(user)).thenReturn(user);
         when(userMapper.toDto(eq(user))).thenReturn(userDto);
 
         mockMvc.perform(post("/api/users")
